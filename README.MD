@@ -22,6 +22,10 @@ jobs:
         uses: jlieow/terraformx_destroy@V1 # Uses an action in the repo terraformx_destroy owned by jlieow tagged as V1
         with:
           dir: ec2 # Remember to set the tag dir too
+          terraform_env_variables: |
+            key=value,
+            test=this,
+            hello=world
           aws_profiles: |
             [
               {
