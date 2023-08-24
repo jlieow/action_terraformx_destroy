@@ -19,7 +19,7 @@ jobs:
 
       - name: Perform Terraformx Destroy
         id: terraformx_destroy
-        uses: jlieow/terraformx_destroy@V1 # Uses an action in the repo terraformx_destroy owned by jlieow tagged as V1
+        uses: jlieow/action_terraformx_destroy@V1 # Uses an action in the repo terraformx_destroy owned by jlieow tagged as V1
         with:
           dir: ec2 # Remember to set the tag dir too
           terraform_env_variables: |
@@ -39,4 +39,14 @@ jobs:
                 "profile_name": ${{ toJSON(secrets.AWS_SPOKE_PROFILE_NAME) }}
               }
             ]
+          az_service_principals: |
+            [
+              {
+                "az_client_id": ${{ toJSON(secrets.AZ_USERNAME) }},
+                "az_client_secret": ${{ toJSON(secrets.AZ_PASSWORD) }},
+                "az_tenant_id": ${{ toJSON(secrets.AZ_TENANT_ID) }},
+                "az_subscription_id": ${{ toJSON(secrets.AZ_SUBSCRIPTION_ID) }}
+              }
+            ]
+          gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 ```
