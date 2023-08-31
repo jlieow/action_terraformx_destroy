@@ -17,9 +17,6 @@ inputs:
   az_service_principals:
     description: "List of Azure Subscriptions, logins and passwords"
     required: false
-  gcp_service_account_key:
-    description: "Key of service account"
-    required: false
   active_stages:
     description: "Specify the active stages overriding the active stages in the workflow."
     required: false
