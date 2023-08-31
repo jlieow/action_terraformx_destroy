@@ -24,18 +24,17 @@ inputs:
     description: "Specify the active stages overriding the active stages in the workflow."
     required: false
     default: ""
+  gcp_profiles:
+    description: "List of GCP profile names and keys"
+    required: false
 runs:
   using: "composite"
   steps:
-    - name: Set dir to store files from custom action
-      run: echo "ACTION_BASE_DIR=terraformx_destroy" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Checkout aws_spoke
+    - name: Checkout jlieow/action_terraformx_destroy repo to store files from custom action
       uses: actions/checkout@v3
       with:
-        repository: jlieow/${{ env.ACTION_BASE_DIR }}
-        path: ${{ env.ACTION_BASE_DIR }}
+        repository: jlieow/action_terraformx_destroy
+        path: action_terraformx_destroy
 
     - name: Export Terraform Environmental Variables
       run: |
@@ -91,16 +90,17 @@ runs:
         done
       shell: bash
 
-    - if: ${{ inputs.gcp_service_account_key }} != ""
-      id: 'auth'
-      name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v1'
-      with:
-        credentials_json: ${{ inputs.gcp_service_account_key }}
+    - name: Configure GCP Profiles
+      run: |
+        jq -r '.[] | to_entries[] | "\(.key) \(.value | tojson )"' <<< '${{ inputs.gcp_profiles }}' | while read -r key value ; do
+          jq -n "$value" > ${{ github.workspace }}/"$key".json
+        done
+        echo "TF_VAR_github_workspace=${{ github.workspace }}" >> "$GITHUB_ENV"
+      shell: bash
 
     - name: Perform Terraformx Destroy
       working-directory: ${{ inputs.dir }}
       run: |
-        chmod +x $GITHUB_WORKSPACE/$ACTION_BASE_DIR/exe/destroy
-        $GITHUB_WORKSPACE/$ACTION_BASE_DIR/exe/destroy -active-stages=$active_stages
+        chmod +x $GITHUB_WORKSPACE/action_terraformx_destroy/exe/destroy
+        $GITHUB_WORKSPACE/action_terraformx_destroy/exe/destroy -active-stages=$active_stages
       shell: bash
