@@ -27,12 +27,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout jlieow/action_terraformx_destroy repo to store files from custom action
-      uses: actions/checkout@v3
-      with:
-        repository: jlieow/action_terraformx_destroy
-        path: action_terraformx_destroy
-
     - name: Export Terraform Environmental Variables
       run: |
         terraform_env_variables=$(cat <<EOF
@@ -97,6 +91,6 @@ runs:
     - name: Perform Terraformx Destroy
       working-directory: ${{ inputs.dir }}
       run: |
-        chmod +x $GITHUB_WORKSPACE/action_terraformx_destroy/exe/destroy
-        $GITHUB_WORKSPACE/action_terraformx_destroy/exe/destroy -active-stages=$active_stages
+        chmod +x $GITHUB_ACTION_PATH/exe/destroy
+        $GITHUB_ACTION_PATH/exe/destroy -active-stages=$active_stages
       shell: bash
