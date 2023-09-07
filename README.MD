@@ -1,4 +1,4 @@
-Sample workflow to reference to this action
+# Sample workflow to reference to this action
 
 ```
 name: Perform Terraformx Destroy Action using Linux exe
@@ -23,20 +23,13 @@ jobs:
         with:
           dir: ec2 # Remember to set the tag dir too
           terraform_env_variables: |
-            key=value,
-            test=this,
-            hello=world
+            TF_VAR_path_to_sa1=${{ github.workspace }}/sa1_profile_name.json
           aws_profiles: |
             [
               {
                 "aws_access_key_id": ${{ toJSON(secrets.AWS_HUB_PROFILE_AWS_ACCESS_KEY_ID) }},
                 "aws_secret_access_key": ${{ toJSON(secrets.AWS_HUB_PROFILE_AWS_SECRET_ACCESS_KEY) }},
                 "profile_name": ${{ toJSON(secrets.AWS_HUB_PROFILE_NAME) }}
-              },
-              {
-                "aws_access_key_id": ${{ toJSON(secrets.AWS_SPOKE_PROFILE_AWS_ACCESS_KEY_ID) }},
-                "aws_secret_access_key": ${{ toJSON(secrets.AWS_SPOKE_PROFILE_AWS_SECRET_ACCESS_KEY) }},
-                "profile_name": ${{ toJSON(secrets.AWS_SPOKE_PROFILE_NAME) }}
               }
             ]
           az_service_principals: |
@@ -48,5 +41,12 @@ jobs:
                 "az_subscription_id": ${{ toJSON(secrets.AZ_SUBSCRIPTION_ID) }}
               }
             ]
-          gcp_service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          gcp_profiles: |
+            [
+              {
+                "sa1_profile_name": ${{ secrets.SA1_KEY }}
+              }
+            ]
 ```
+
+Read [GCP Info](GCP_INFO.MD) for GCP specific instructions
